@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Etch-a-Sketch</title>
+    <style>
+        :root{
+            --num-of-rows: 16;
+            --rows-and-columns: 6.25%;
+        }
+        body{
+            background-color: #A8dee6;
+        }
+        .wrap{
+            width: 90vw;
+            height: 90vh;
+        }
+        .container {
+            position: absolute;
+            width: 30rem;
+            height: 30rem;
+            left: 50%;
+            top: 70%;
+            transform: translate(-50%, -50%);
+            display: grid;
+            grid-template-columns: repeat(var(--num-of-rows), var(--rows-and-columns));
+            grid-template-rows: repeat(var(--num-of-rows), var(--rows-and-columns));
+            border: 1px solid black;
+        }
+        .box{
+            background-color: #ffffff;
+        }
+        .btn-container{
+            text-align: center;
+            display: relative;
+            margin-top: 10%;
+            margin-left: 9%;
+        }
+        button{
+            border: 1px solid white;
+            margin: 2rem;
+            background-color: #f76c6c;
+            color: white;
+            padding: 1.3rem;
+            transition-duration: 0.9s;
+        }
+        button:hover {
+            cursor: pointer;
+            color: #f76c6c;
+            background-color: white;
+        }
+        button:focus {outline:0;}
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <div class="btn-container">
+            <button class="new">New</button>
+            <button class='random'>Random colors</button>
+        </div>
+        <div class="container">
+
+        </div>
+    </div>
+<script>
+    let container = document.querySelector('.container');
+    container.className = 'container';
+
+    let newBtn = document.querySelector('.new');
+    let isNewpg = false;
+    let randBtn = document.querySelector('.random');
+
+    const randColors = () => {
+        let randArr = [];
+        for(let i=0; i<3; i++){
+            randArr.push(Math.floor(Math.random()*257));
+        }
+        return `rgb(${randArr[0]}, ${randArr[1]}, ${randArr[2]})`;
+    }
+    let isRand = false;
+    randBtn.addEventListener('click', ()=>{
+        isRand = true;
+    });
+
+    const hovering = (div) => {
+        div.addEventListener('mouseover', () => {
+            if(isRand == false){
+                div.setAttribute('style', `background-color: black`);
+            } else{
+                div.setAttribute('style', `background-color: ${randColors()}`);
+            }
+        });
+        return div
+    }
+
+    const makingDiv = () => {
+        let div = document.createElement('div');
+        div = hovering(div);
+        div.className = 'box';
+        //div.textContent = 'A';
+        return div;
+    }
+
+    let numOfSquares = 16;
+    const newSketch = () => {
+        numOfSquares = parseInt(prompt(`How much squares u want in your skecth min:1 max:100 default 
+        is 16 (if you eneter invlaid value the number of squares will be 16)`));
+        if(numOfSquares < 1 || numOfSquares > 100){
+            alert('You eneter too low or too high value');
+            numOfSquares = 16
+        }
+        let rowsAndColumn = 1 / numOfSquares * 100;
+        document.documentElement.style.setProperty('--rows-and-columns', rowsAndColumn.toString()+'%');
+        document.documentElement.style.setProperty('--num-of-rows', numOfSquares);
+
+        return numOfSquares;
+    }
+
+    
+
+    const sketch = () => {
+        for(let i =0; i< numOfSquares; i++){
+        for (let j =0; j< numOfSquares; j++){
+            container.appendChild(makingDiv());
+        }
+    }}
+
+    sketch();
+    
+    newBtn.addEventListener('click', ()=>{
+        numOfSquares =  newSketch();
+        isRand = false;
+        removeDivs();
+        sketch();
+    });
+
+    const removeDivs = () => {
+        const myNode = document.querySelector(".container");
+        while (myNode.firstChild) {
+            myNode.removeChild(myNode.firstChild);
+        }
+    }
+
+
+
+</script>
+</body>
+</html>
